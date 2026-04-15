@@ -73,6 +73,8 @@
             padding: 15px;
             border-radius: 12px;
             width: 80%;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .btn-manual {
@@ -100,26 +102,27 @@
                 💡 由於 Facebook 瀏覽器限制，請切換至 Safari 或 Chrome 瀏覽器，以確保報名資料能正確提交。
             </div>
 
-            <a href="https://script.google.com/macros/s/AKfycbx5gDmMbNw7ZFsnHVJWqz3Ln4YflWiwBOk5GIXgvIyIe5wuXwnbnKIfj44a6rrlPC47/exec" 
+            <a href="https://script.google.com/macros/s/AKfycbxjpmVSbnpu6qXGLz90pSZauo_BCgBNUlMBHeXudcfU-OW-Y43E1zhZ4KSplIpy_p48DA/exec" 
                class="btn-manual">若您已在外部瀏覽器，請點此進入</a>
         </div>
     </div>
 
     <script>
-        var gasUrl = "https://script.google.com/macros/s/AKfycbx5gDmMbNw7ZFsnHVJWqz3Ln4YflWiwBOk5GIXgvIyIe5wuXwnbnKIfj44a6rrlPC47/exec";
+        // 更新後的 GAS 網址
+        var gasUrl = "https://script.google.com/macros/s/AKfycbxjpmVSbnpu6qXGLz90pSZauo_BCgBNUlMBHeXudcfU-OW-Y43E1zhZ4KSplIpy_p48DA/exec";
         var ua = navigator.userAgent || navigator.vendor || window.opera;
         
-        // 判斷是否為 iOS 環境
-        var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        // 判斷是否為行動裝置
+        var isMobile = /Android|iPhone|iPad|iPod/i.test(ua);
         // 判斷是否在 FB 或 Line 內
         var isFB = (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1);
         var isLine = (ua.indexOf("Line") > -1);
 
-        if (isIOS && (isFB || isLine)) {
-            // 在 iOS FB 內：顯示黑色指引
+        if (isMobile && (isFB || isLine)) {
+            // 在 FB/Line 內：顯示黑色指引，不自動跳轉
             document.getElementById('ios-guide').style.display = 'flex';
         } else {
-            // 在 Safari/Chrome/Android：直接跳轉到 GAS 表單
+            // 在外部瀏覽器：直接進入表單
             window.location.replace(gasUrl);
         }
     </script>
