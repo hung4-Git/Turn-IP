@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>岡山高中 80 週年校慶報名入口</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; background: #f4f7f6; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 350px; width: 90%; text-align: center; }
+        .logo { width: 80px; margin-bottom: 20px; }
+        h2 { color: #1565c0; margin: 0 0 10px 0; }
+        p { color: #666; line-height: 1.6; margin-bottom: 30px; }
+        .btn { display: block; background: #1565c0; color: white; padding: 18px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 1.1em; box-shadow: 0 5px 15px rgba(21, 101, 192, 0.3); transition: transform 0.2s; }
+        .btn:active { transform: scale(0.95); }
+        .footer { margin-top: 20px; font-size: 0.8em; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <img src="https://drive.google.com/thumbnail?id=1bRoOE7XORk6doE2AVxX9LmfqdXNdproc&sz=w200" class="logo">
+        <h2>岡山高中 80 週年</h2>
+        <p>為確保報名系統正常運作<br>請點擊下方按鈕開始報名</p>
+        
+        <a href="https://script.google.com/macros/s/AKfycbx5gDmMbNw7ZFsnHVJWqz3Ln4YflWiwBOk5GIXgvIyIe5wuXwnbnKIfj44a6rrlPC47/exec" id="openBtn" class="btn">🚀 前往報名表單</a>
+        
+        <div class="footer">建議使用 Chrome 或 Safari 瀏覽器</div>
+    </div>
+
+    <script>
+        // 你的 GAS 網址
+        var gasUrl = "https://script.google.com/macros/s/AKfycbx5gDmMbNw7ZFsnHVJWqz3Ln4YflWiwBOk5GIXgvIyIe5wuXwnbnKIfj44a6rrlPC47/exec";
+        var ua = navigator.userAgent || navigator.vendor || window.opera;
+        
+        // 針對 Android FB/Line 的強制跳轉協議
+        if (ua.indexOf("Android") > -1 && (ua.indexOf("FBAN") > -1 || ua.indexOf("FBAV") > -1 || ua.indexOf("Line") > -1)) {
+            var intentUrl = "intent://" + gasUrl.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
+            window.location.href = intentUrl;
+        }
+
+        // 點擊按鈕時的處理
+        document.getElementById('openBtn').onclick = function(e) {
+            // 如果是 iOS 或其他環境，正常跳轉
+            if (ua.indexOf("iPhone") > -1 || ua.indexOf("iPad") > -1) {
+                // iOS 在 FB 內無法強制跳轉，必須由使用者主動點擊並透過 target _blank 嘗試觸發系統瀏覽器
+                window.open(gasUrl, '_blank');
+                return false;
+            }
+        };
+    </script>
+</body>
+</html>
