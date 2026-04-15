@@ -2,53 +2,61 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>岡山高中 80 週年校慶報名系統</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>岡山高中 80 週年校慶報名入口</title>
     <style>
-        body { font-family: "Microsoft JhengHei", sans-serif; background: #f0f2f5; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f0f2f5; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        
+        /* 針對 iOS FB 的黑色遮罩 */
+        #ios-guide {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); z-index: 9999; color: white;
+        }
+        .arrow-img { position: absolute; top: 10px; right: 20px; width: 60px; filter: invert(1); }
+        .instructions { text-align: center; margin-top: 100px; padding: 20px; font-size: 1.2em; line-height: 1.8; }
+        .highlight { color: #ffeb3b; font-weight: bold; font-size: 1.3em; }
+
         .card { background: white; padding: 40px 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 350px; width: 90%; text-align: center; }
-        .btn { display: block; background: #1565c0; color: white; padding: 18px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 1.1em; margin-top: 20px; }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #1565c0; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .btn { display: block; background: #1565c0; color: white; padding: 18px; text-decoration: none; border-radius: 50px; font-weight: bold; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <div class="card">
+
+    <div id="ios-guide">
+        <img src="https://img.icons8.com/m_outlined/512/FFFFFF/up-right.png" class="arrow-img">
+        <div class="instructions">
+            <p>偵測到您正在使用 <span class="highlight">iOS 裝置</span></p>
+            <p>請點擊右上角 <span class="highlight">「...」</span></p>
+            <p>選擇 <span class="highlight">「在瀏覽器中開啟」</span></p>
+            <p>或是 <span class="highlight">「使用預設瀏覽器開啟」</span></p>
+            <p style="font-size: 0.8em; color: #ccc; margin-top: 30px;">( 這樣才能正常顯示報名表內容喔！ )</p>
+        </div>
+    </div>
+
+    <div id="main-content" class="card">
         <h2 style="color:#1565c0;">岡山高中 80 週年</h2>
-        <div id="statusText">正在開啟報名系統...</div>
-        <div id="loader" class="loader"></div>
-        
+        <p>歡迎報名校慶講座<br>系統載入中...</p>
         <a href="https://script.google.com/macros/s/AKfycbx5gDmMbNw7ZFsnHVJWqz3Ln4YflWiwBOk5GIXgvIyIe5wuXwnbnKIfj44a6rrlPC47/exec" 
-           id="manualBtn" class="btn" style="display:none;">點此手動開啟</a>
+           class="btn" id="manual-link">🚀 前往報名表</a>
     </div>
 
     <script>
         var gasUrl = "https://script.google.com/macros/s/AKfycbx5gDmMbNw7ZFsnHVJWqz3Ln4YflWiwBOk5GIXgvIyIe5wuXwnbnKIfj44a6rrlPC47/exec";
         var ua = navigator.userAgent || navigator.vendor || window.opera;
+        
+        // 判斷是否為 iOS 的 FB 或 Line
+        var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        var isFB = (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1);
+        var isLine = (ua.indexOf("Line") > -1);
 
-        function redirect() {
-            // 1. 針對 Android FB/Line 的強制喚起協議 (Intent)
-            if (ua.indexOf("Android") > -1 && (ua.indexOf("FBAN") > -1 || ua.indexOf("FBAV") > -1 || ua.indexOf("Line") > -1)) {
-                var intentUrl = "intent://" + gasUrl.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
-                window.location.href = intentUrl;
-            } 
-            // 2. 針對 iOS (iPhone/iPad)
-            else if (ua.indexOf("iPhone") > -1 || ua.indexOf("iPad") > -1) {
-                // iOS 在 FB 內無法直接強制開啟 Safari，但顯示按鈕讓使用者點擊可增加成功率
-                document.getElementById('statusText').innerText = "請點擊下方按鈕以 Safari 開啟";
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('manualBtn').style.display = 'block';
-                // 嘗試直接跳轉 (有時 iOS 的 Line 會成功)
-                window.location.href = gasUrl;
-            } 
-            // 3. 一般電腦或其他環境
-            else {
-                window.location.href = gasUrl;
-            }
+        if (isIOS && (isFB || isLine)) {
+            // 在 iOS 的受限環境中：顯示黑色遮罩，隱藏主內容
+            document.getElementById('ios-guide').style.display = 'block';
+            document.getElementById('main-content').style.display = 'none';
+        } else {
+            // 如果已經在 Safari 或其他環境，直接跳轉到 GAS
+            window.location.href = gasUrl;
         }
-
-        // 執行跳轉
-        setTimeout(redirect, 500);
     </script>
 </body>
 </html>
